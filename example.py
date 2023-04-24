@@ -54,9 +54,9 @@ def score(state: KnightsChess):
         print(res)
         print(state)
         if state.turn == state.WHITE:
-            return 1000
-        else:
             return -1000
+        else:
+            return 1000
 
     # if len(state.black_knights) == 0:
     #     print("negro !!!!!!!!!!!")
@@ -142,6 +142,7 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
             return hval
 
     if depth == 0:
+        # print(state)
         return score(state)
 
 
@@ -186,7 +187,7 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
         return beta
 
 
-def quiescence(state: KnightsChess, depth, alpha: int, beta: int):
+def quiescence(state: KnightsChess, alpha: int, beta: int,depth,):
     puntuacion = score(state)
 
     if depth == 0:
@@ -203,8 +204,10 @@ def quiescence(state: KnightsChess, depth, alpha: int, beta: int):
         for m in sorted_moves(state, hbestm):
             if state.is_capture(m):
                 state.move(m)
-                val = minimax(state, alpha, beta, depth - 1)
+                val = quiescence(state, alpha, beta, depth - 1)
                 state.undo(m)
+                if val == 1000 or val == -1000:
+                    return val
                 if val > alpha:
                     alpha = val
                     bestm = m
@@ -218,8 +221,10 @@ def quiescence(state: KnightsChess, depth, alpha: int, beta: int):
         for m in sorted_moves(state, hbestm):
             if state.is_capture(m):
                 state.move(m)
-                val = minimax(state, alpha, beta, depth - 1)
+                val = quiescence(state, alpha, beta, depth - 1)
                 state.undo(m)
+                if val == 1000 or val == -1000:
+                    return val
                 if val < beta:
                     beta = val
                     bestm = m
@@ -243,7 +248,7 @@ htable = {} # hkey -> (value, depth, bestm, flag)
 hit_cnt = 0
 
 
-for d in range(2, 20):
+for d in range(2, 12):
     node_cnt = 0
     hit_cnt = 0
     dbg_cnt = 0
