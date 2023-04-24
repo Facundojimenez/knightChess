@@ -11,8 +11,8 @@ class KnightsChess:
 
     # def __init__(self, knights=("a1,c1,e1,g1", "b8,d8,f8,h8")):
     # def __init__(self, knights=("a1,b2,c1,d2,e1,f2,g1,h2", "b8,d8")):
-    # def __init__(self, knights=("a1,c1,e1,g1", "b8,d8")): #WINNER SO FAR
-    def __init__(self, knights=("a1,c1,e1,g1", "b8,d8")):
+    def __init__(self, knights=("a1,c1", "b8")): #WINNER SO FAR
+    # def __init__(self, knights=("a1", "")):
         self.stack = []
         self._setup(knights)
         self.turn = self.WHITE
