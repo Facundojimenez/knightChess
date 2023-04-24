@@ -51,7 +51,12 @@ def score(state: KnightsChess):
     res = state.game_over()
 
     if res != 0:
-        return res
+        print(res)
+        print(state)
+        if state.turn == state.WHITE:
+            return 1000
+        else:
+            return -1000
 
     # if len(state.black_knights) == 0:
     #     print("negro !!!!!!!!!!!")
@@ -60,19 +65,26 @@ def score(state: KnightsChess):
     #     print("blanco ??????????")
     #     print(state)
 
+    # if res != 0:
+    #     print("pnga")
+    #     return res
+
+
     # print("MOVIMIENTO: " + state.turn + "----->" + str(dbg_move[0]) + "-"  + str(dbg_move[1]))
     # print("MOVIMIENTO: " + state.turn + "----->" + state.move2notation(dbg_move))
     # print(state)
     # print("BLACK: " + str(len(state.black_knights)))
     # print("WHITE: " + str(len(state.white_knights)))
     value = 0
-    for kn in state.black_knights:
-        r, c = kn
-        value -= center[r][c]
+    if state.turn == state.BLACK:
+        for kn in state.black_knights:
+            r, c = kn
+            value -= center[r][c]
+    else:
+        for kn in state.white_knights:
+            r, c = kn
+            value += center[r][c] #TODO CAMBIAR A += A VER SI MEJORA
 
-    # if state.turn == state.BLACK:
-    #     return value
-    # else:
     return value
 
 def evaluate_move(state, m, bestm):
@@ -80,20 +92,15 @@ def evaluate_move(state, m, bestm):
     if m == bestm:
         dbg_cnt +=1
         return 10000
-    # print(m)
-    # print(killer_moves)
-    # print("ESPACIO")
+
     if m in killer_moves[0] or m in killer_moves[1]:
         dbg_cnt2 += 1
-        # print("kkk")
         return 9000
 
     if state.is_capture(m):
-        # print("ccc")
         dbg_cnt3 += 1
         return 8000
 
-    # print("xxx")
     return center[m[1][0]][m[1][1]]
 def sorted_moves(state: KnightsChess, hbestm):
     def orderer(move):
@@ -114,15 +121,14 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
     node_cnt += 1
 
     rez = state.game_over()
-    if rez:
-        return rez  # , []
+
+    if rez != 0:
+        # print(rez)
+        return score(state)
 
     # if depth == 0:
     #     puntuacion = quiescence(state, 3, alpha, beta)
     #     return puntuacion
-
-    if depth == 0:
-        return score(state)
 
     hbestm = None
     if hash(state) in htable:
@@ -135,6 +141,9 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
         if hdepth >= depth and hflag == "beta" and alpha >= hval:
             return hval
 
+    if depth == 0:
+        return score(state)
+
 
     if state.turn == state.WHITE:
         bestm = None
@@ -143,6 +152,8 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
             dbg_move = m
             val = minimax(state, alpha, beta, depth-1)
             state.undo(m)
+            if val == 1000 or val == -1000:
+                return val
             if val > alpha:
                 alpha = val
                 bestm = m
@@ -160,6 +171,8 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
             state.move(m)
             val = minimax(state, alpha, beta, depth-1)
             state.undo(m)
+            if val == 1000 or val == -1000:
+                return val
             if val < beta:
                 beta = val
                 bestm = m
@@ -230,7 +243,7 @@ htable = {} # hkey -> (value, depth, bestm, flag)
 hit_cnt = 0
 
 
-for d in range(2, 50):
+for d in range(2, 20):
     node_cnt = 0
     hit_cnt = 0
     dbg_cnt = 0
