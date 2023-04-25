@@ -9,9 +9,10 @@ class KnightsChess:
     COL_NAMES = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
     ROW_NAMES = {"1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5, "7": 6, "8": 7}
 
-    # def __init__(self, knights=("a1,c1,e1,g1", "b8,d8,f8,h8")):
-    # def __init__(self, knights=("a1,b2,c1,d2,e1,f2,g1,h2", "a8,b7,c8,d7,e8,f7,h8")):
-    def __init__(self, knights=("a1,d2,h1", "a8,d7,h8")):
+    def __init__(self, knights=("a1,b2,c1,e1,g1", "b8,d8,f8,h8")):
+    # def __init__(self, knights=("a1,b2,c1,d2,e1,f2,g1,h2", "a8,b7,c8,d7,e8,f7,g8,h8")):
+    # def __init__(self, knights=("a1,b2,c1,d2", "a8,e8,f7,g8,h8")):
+    # def __init__(self, knights=("a1,d2,f1,h1", "a8,d7,h8")):
     # def __init__(self, knights=("a1,b2,c1,d2", "a8,b7,c8,d7")): #WINNER SO FAR
     # def __init__(self, knights=("a1", "")):
         self.stack = []
@@ -78,10 +79,8 @@ class KnightsChess:
         kfrom, kto = move
         if self.turn == self.WHITE:
             oknights = self.black_knights
-            # print("AAAAAAAAAAAAAAA")
         else:
             oknights = self.white_knights
-            # print("aaaaaaaaaaaaaaaaaaaa")
 
         return True if kto in oknights else False
 

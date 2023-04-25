@@ -122,13 +122,13 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
 
     rez = state.game_over()
 
-    if rez != 0:
-        # print(rez)
-        return score(state)
-
-    # if depth == 0:
-    #     puntuacion = quiescence(state, 3, alpha, beta)
-    #     return puntuacion
+    # if rez != 0:
+    #     # print(rez)
+    #     return score(state)
+    #
+    if depth == 0:
+        puntuacion = quiescence(state, alpha, beta, 3)
+        return puntuacion
 
     hbestm = None
     if hash(state) in htable:
@@ -187,14 +187,14 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
         return beta
 
 
-def quiescence(state: KnightsChess, alpha: int, beta: int,depth,):
+def quiescence(state: KnightsChess, alpha: int, beta: int,depth):
     puntuacion = score(state)
 
-    if depth == 0:
+    if depth <= 0 or state.game_over() != 0:
         return puntuacion
 
     if puntuacion >= beta:
-        return beta
+        return puntuacion
     if alpha < puntuacion:
         alpha = puntuacion
 
@@ -248,7 +248,7 @@ htable = {} # hkey -> (value, depth, bestm, flag)
 hit_cnt = 0
 
 
-for d in range(2, 12):
+for d in range(2, 13):
     node_cnt = 0
     hit_cnt = 0
     dbg_cnt = 0
