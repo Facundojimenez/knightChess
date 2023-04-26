@@ -1,363 +1,207 @@
-
 from knightschess import KnightsChess
-from math import inf
 import numpy as np
 
-def count(game, d):
-    if game.game_over() != 0:
-        return 1
-    if d == 0:
-        return 1
-    cnt = 0
-    for m in knights.legal_moves():
-        game.move(m)
-        cnt += count(game, d-1)
-        game.undo(m)
-    return cnt
-
-def minimax(game, depth):
-    global node_count
-
-    if game.game_over() != 0:
-        node_count += 1
-        return game.game_over()
-    if depth == 0:
-        node_count += 1
-        return 0
-
-    if game.turn == game.WHITE:
-        maxv = -inf
-        for move in game.legal_moves():
-            game.move(move)
-            value = minimax(game, depth - 1)
-            game.undo(move)
-            if value > maxv:
-                maxv = value
-        return maxv
-    else:
-        minv = inf
-        for move in game.legal_moves():
-            game.move(move)
-            value = minimax(game, depth - 1)
-            game.undo(move)
-            if value < minv:
-                minv = value
-            return minv
-
-def alphabeta(game, depth, alpha, beta):
-
-    global node_count
-
-    if game.game_over() != 0:
-        node_count += 1
-        return game.game_over()
-
-    if depth == 0:
-        node_count += 1
-        return 0
-
-    if game.turn == game.WHITE:
-        maxv = -inf
-        for move in game.legal_moves():
-            game.move(move)
-            value = alphabeta(game, depth - 1, alpha, beta)
-            game.undo(move)
-            if value > maxv:
-                maxv = value
-                alpha = value
-            if alpha >= beta:
-                break
-        return alpha
-    else:
-        minv = inf
-        for move in game.legal_moves():
-            game.move(move)
-            value = alphabeta(game, depth - 1, alpha, beta)
-            game.undo(move)
-
-            if value < minv:
-                minv = value
-                beta = value
-            if alpha >= beta:
-                break
-        return beta
-
-heat_map = [
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    ]
-
-def printBoard(board):
-    s = ""
-    for r in reversed(range(8)):
-        s += str(r + 1) + "   "
-        for c in range(8):
-                s += str(board[r][c]) + " "
-        s += "\n"
-    s += "    a b c d e f g h\n"
-    print(s)
-
-def sorted_moves2(game):
-    # heat_map = np.array([
-    # [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    # [ 0, 1, 2, 2, 2, 2, 1, 0 ],
-    # [ 0, 1, 2, 3, 3, 2, 1, 0],
-    # [ 0, 1, 2, 5, 5, 2, 1, 0 ],
-    # [ 0, 1, 2, 5, 5, 2, 1, 0 ],
-    # [ 0, 1, 2, 3, 3, 2, 1, 0 ],
-    # [ 0, 1, 2, 2, 2, 2, 1, 0 ],
-    # [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    # ])
-
-    # heat_map = np.array([
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    # ])
-
-    # heat_map = np.array([
-    #     [7, 4, 3, 2, 1, 0, 0, 0],
-    #     [6, 4, 3, 2, 1, 0, 0, 0],
-    #     [6, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [6, 4, 3, 2, 1, 0, 0, 0],
-    #     [6, 4, 3, 2, 1, 0, 0, 0],
-    #     [7, 4, 3, 2, 1, 0, 0, 0],
-    # ])
-
-    # heat_map = np.array([
-    #     [7, 4, 3, 2, 1, 0, 0, 0],
-    #     [6, 4, 3, 2, 1, 0, 0, 0],
-    #     [6, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [5, 4, 3, 2, 1, 0, 0, 0],
-    #     [6, 4, 3, 2, 1, 0, 0, 0],
-    #     [6, 4, 3, 2, 1, 0, 0, 0],
-    #     [7, 4, 3, 2, 1, 0, 0, 0],
-    # ])
-
-    heat_map = np.array([
-        [6, 4, 3, 2, 0, 0, 0, 0],
-        [6, 4, 3, 2, 0, 0, 0, 0],
-        [6, 4, 3, 2, 0, 0, 0, 0],
-        [0, 3, 3, 2, 0, 0, 0, 0],
-        [0, 3, 3, 2, 0, 0, 0, 0],
-        [6, 4, 3, 2, 0, 0, 0, 0],
-        [6, 4, 3, 2, 0, 0, 0, 0],
-        [7, 4, 3, 2, 0, 0, 0, 0],
+center = np.array([
+    [ 80, 50, 40, 40, 40, 35,  0, 0 ],
+    [ 60, 50, 35, 35, 35, 35,  0, 0 ],
+    [ 35, 35, 35, 30, 30, 30,  0, 0 ],
+    [ 25, 25, 25, 25, 25, 25,  0, 0 ],
+    [ 25, 20, 20, 20, 20, 20,  0, 0 ],
+    [ 15, 15, 15, 15, 15, 15,  0, 0 ],
+    [ 10, 10, 10, 10, 10,  5,  0, 0 ],
+    [  0,  0,  0,  0,  0,  0,  0, 0 ]
     ])
 
-    if game.turn == game.WHITE:
-        oknights = game.black_knights
+def score(state: KnightsChess):
+    res = state.game_over()
+    if res != 0:
+        return res
+
+    value = 0
+    if state.turn == state.BLACK:
+        for kn in state.black_knights:
+            r, c = kn
+            value -= center[r][c]
     else:
-        oknights = game.white_knights
-    moves = knights.legal_moves()
-    vmoves = []
+        for kn in state.white_knights:
+            r, c = kn
+            value += center[r][c] #TODO CAMBIAR A += A VER SI MEJORA
 
-    for enemy in oknights:
-        r, c = enemy
-        for i in range(0, 3):
-            if(r - 1 >= 0 and c - 1 + i >= 0 and c - 1 + i < 8):
-                heat_map[r - 1][c - 1 + i] += 50
-            if(r - 0 >= 0 and c - 1 + i >= 0 and c - 1 + i < 8):
-                heat_map[r - 0][c - 1 + i] += 50
-            if(r + 1 < 8 and c - 1 + i >= 0 and c - 1 + i < 8):
-                heat_map[r + 1][c - 1 + i] += 50
-        heat_map[r][c] = 999
+    return value
 
-    # printBoard(heat_map)
-    for m in moves:
-        kfrom, kto = m
-        v = heat_map[kto[0]][kto[1]]
-        # print(v)
-        vmoves.append((m, v))
-        # print(vmoves)
-    vmoves = sorted(vmoves, key=lambda x: -x[1])
-    # print(vmoves)
-    return [m for m, v in vmoves]
+def evaluate_move(state, m, bestm):
+    global dbg_cnt, dbg_cnt2, dbg_cnt3
+    if m == bestm:
+        dbg_cnt +=1
+        return 10000
 
-def is_capture(game, move):
-    if game.turn == game.WHITE:
-        oknights = game.black_knights
-    else:
-        oknights = game.white_knights
+    if m in killer_moves[0] or m in killer_moves[1]:
+        dbg_cnt2 += 1
+        return 9000
 
-    if move in oknights:
-        return True
-    else:
-        return False
+    if state.is_capture(m):
+        dbg_cnt3 += 1
+        return 8000
+
+    return center[m[1][0]][m[1][1]]
+def sorted_moves(state: KnightsChess, hbestm):
+    def orderer(move):
+        return evaluate_move(state, move, hbestm)
+
+    moves = state.legal_moves()
+    in_order = sorted(moves, key=orderer, reverse=True)
+    return list(in_order)
+
+def insert_killerMove(move, depth):
+    global killer_moves
+    if killer_moves[0][depth] != move:
+        killer_moves[1][depth] = killer_moves[0][depth]
+        killer_moves[0][depth] = move
 
 
-def sorted_moves(game):
-    if game.turn == game.WHITE:
-        oknights = game.black_knights
-    else:
-        oknights = game.white_knights
-    moves = knights.legal_moves()
-    vmoves = []
-    for m in moves:
-        kfrom, kto = m
-        if kto in oknights:
-            v = 10
-        else:
-            v = 0
-        vmoves.append((m,v))
-    vmoves = sorted(vmoves, key=lambda x: -x[1])
-    print(vmoves)
-    return [ m for m, v in vmoves ]
+def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
+    global node_cnt, hit_cnt, killer_moves
+    node_cnt += 1
 
-def score(game):
-    return len(game.white_knights) - len(game.black_knights)
 
-def alphabeta2(game, d, alpha, beta):    
-    global node_count
-    
-    if game.game_over() != 0:
-        node_count += 1
-        return game.game_over()
-    if d == 0:
-        node_count += 1
-        return score(game)
-    if game.turn == game.WHITE:
-        for m in sorted_moves(game):
-            game.move(m)
-            v = alphabeta2(game, d-1, alpha, beta)
-            game.undo(m)
-            if alpha < v:
-                alpha = v
-            if alpha >= beta:
-                break
-        return alpha
-    else:
-        for m in sorted_moves(game):
-            game.move(m)
-            v = alphabeta2(game, d-1, alpha, beta)
-            game.undo(m)
-            if beta > v:
-                beta = v
-            if alpha >= beta:
-                break
-        return beta    
-
-htable = {} # hc -> (value, depth)
-hit_count = 0
-
-def alphabeta3(game, d, alpha, beta):    
-    global node_count, hit_count
-
-    # la idea de hashear el status de la partida es que si en algun momento se repite, ya se de antemano el valor de ese movimiento y no tengo que calcularlo de nuevo.
-    if hash(game) in htable:
-        hit_count += 1
-        hval, hdepth = htable[hash(game)]
-        if hdepth >= d:
+    hbestm = None
+    if hash(state) in htable:
+        hit_cnt += 1
+        hval, hdepth, hbestm, hflag = htable[hash(state)]
+        if hdepth >= depth and hflag == "exact":
             return hval
-    
-    if game.game_over() != 0:
-        node_count += 1
-        return game.game_over()
-    if d == 0:
-        node_count += 1
-        return score(game)
-    if game.turn == game.WHITE:
-        for m in sorted_moves(game):
-            game.move(m)
-            v = alphabeta3(game, d-1, alpha, beta)
-            game.undo(m)
-            if alpha < v:
-                alpha = v
-            if alpha >= beta:
-                return alpha
-        htable[hash(game)] = (alpha, d)
-        return alpha
-    else:
-        for m in sorted_moves(game):
-            game.move(m)
-            v = alphabeta3(game, d-1, alpha, beta)
-            game.undo(m)
-            if beta > v:
-                beta = v
-            if alpha >= beta:
-                return beta
-        htable[hash(game)] = (beta, d)
-        return beta
-
-
-def alphabeta4(game, d, alpha, beta):
-    global node_count, hit_count
-
-    # la idea de hashear el status de la partida es que si en algun momento se repite, ya se de antemano el valor de ese movimiento y no tengo que calcularlo de nuevo.
-    if hash(game) in htable:
-        hit_count += 1
-        hval, hdepth = htable[hash(game)]
-        if hdepth >= d:
+        if hdepth >= depth and hflag == "alpha" and hval >= beta:
+            return hval
+        if hdepth >= depth and hflag == "beta" and alpha >= hval:
             return hval
 
-    if game.game_over() != 0:
-        node_count += 1
-        return game.game_over()
-    if d == 0:
-        node_count += 1
-        return score(game)
-    if game.turn == game.WHITE:
-        for m in sorted_moves2(game):
-            game.move(m)
-            v = alphabeta4(game, d - 1, alpha, beta)
-            game.undo(m)
-            if alpha < v:
-                alpha = v
+    if state.game_over():
+        return score(state)
+
+    if depth == 0:
+        return score(state)
+
+    #Disabled quiescense search
+    # if depth == 0:
+        # res = quiescence(state, alpha, beta, 0)
+        # return res
+
+    bestm = None
+    if state.turn == state.WHITE:
+        for m in sorted_moves(state, hbestm):
+            state.move(m)
+            val = minimax(state, alpha, beta, depth-1)
+            state.undo(m)
+            if val == state.WIN or val == state.LOSE:
+                return val
+            if val > alpha:
+                alpha = val
+                bestm = m
             if alpha >= beta:
+                if not state.is_capture(m):
+                    insert_killerMove(m, depth)
+                htable[hash(state)] = (alpha, depth, bestm, "alpha")
                 return alpha
-        htable[hash(game)] = (alpha, d)
+        htable[hash(state)] = (alpha, depth, bestm, "exact")
         return alpha
     else:
-        for m in sorted_moves2(game):
-            game.move(m)
-            v = alphabeta4(game, d - 1, alpha, beta)
-            game.undo(m)
-            if beta > v:
-                beta = v
+        for m in sorted_moves(state, hbestm):
+            state.move(m)
+            val = minimax(state, alpha, beta, depth-1)
+            state.undo(m)
+            if val == state.WIN or val == state.LOSE:
+                return val
+            if val < beta:
+                beta = val
+                bestm = m
             if alpha >= beta:
+                if not state.is_capture(m):
+                    insert_killerMove(m, depth)
+                htable[hash(state)] = (beta, depth, bestm, "beta")
                 return beta
-        htable[hash(game)] = (beta, d)
+        htable[hash(state)] = (beta, depth, bestm, "exact")
         return beta
 
+#TODO fix quiescence
+def quiescence(state: KnightsChess, alpha: int, beta: int,depth):
+    scr = score(state)
+
+    if depth <= 0 or state.game_over() != 0:
+        return scr
+
+    if scr >= beta:
+        return scr
+    if alpha < scr:
+        alpha = scr
+
+    hbestm = None
+    bestm = None
+    if state.turn == state.WHITE:
+        for m in sorted_moves(state, hbestm):
+            if state.is_capture(m):
+                state.move(m)
+                val = quiescence(state, alpha, beta, depth - 1)
+                state.undo(m)
+                if val == state.WIN or val == state.LOSE:
+                    return val
+                if val > alpha:
+                    alpha = val
+                    bestm = m
+                if alpha >= beta:
+                    htable[hash(state)] = (alpha, depth, bestm, "alpha")
+                    return alpha
+            htable[hash(state)] = (alpha, depth, bestm, "exact")
+            return alpha
+    else:
+        for m in sorted_moves(state, hbestm):
+            if state.is_capture(m):
+                state.move(m)
+                val = quiescence(state, alpha, beta, depth - 1)
+                state.undo(m)
+                if val == state.WIN or val == state.LOSE:
+                    return val
+                if val < beta:
+                    beta = val
+                    bestm = m
+                if alpha >= beta:
+                    htable[hash(state)] = (beta, depth, bestm, "beta")
+                    return beta
+            htable[hash(state)] = (beta, depth, bestm, "exact")
+            return beta
+
+###Debug variables
+dbg_cnt = 0
+dbg_cnt2 = 0
+dbg_cnt3 = 0
+###
 
 
-'''
-node_count = 0
-value = alphabeta(knights, 14, -inf, inf)
-print(node_count, value)
 
-'''
-# node_count = 0
-# print(minimax(knights, 8))
-# print(node_count)
-#
-#
-# print(alphabeta3(knights, 2, -inf, inf))
-# print(node_count)
+
 knights = KnightsChess()
-# node_count = 0
-# printBoard(heat_map)
-# value = alphabeta3(knights, 6, -inf, inf)
-# print(node_count, hit_count, len(htable), value)
+MAX_DEPTH = 20
+INITIAL_ALPHA = -100000000
+INITIAL_BETA = 100000000
+htable = {} # hkey -> (value, depth, bestm, flag)
 
-node_count = 0
-value = alphabeta4(knights, 9, -inf, inf)
-print(node_count, hit_count, len(htable), value)
-#print(htable)
+#Iterative deepening for alpha-beta pruning algorithm
+for d in range(2, MAX_DEPTH):
+    node_cnt = 0
+    hit_cnt = 0
+    dbg_cnt = 0
+
+    killer_moves = [[(0, 0) for _ in range(MAX_DEPTH)] for _ in range(2)]
+
+    print(d, minimax(knights,  INITIAL_ALPHA, INITIAL_BETA, d), node_cnt,
+          hit_cnt, dbg_cnt, dbg_cnt2, dbg_cnt3)
+
+
+
+
+
+
+
+
 
 
 

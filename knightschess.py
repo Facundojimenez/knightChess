@@ -8,14 +8,9 @@ class KnightsChess:
     BLACK = 'n'
     COL_NAMES = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
     ROW_NAMES = {"1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5, "7": 6, "8": 7}
-
+    #
+    def __init__(self, knights=("a1,c2,e1,g2", "b8,d7,f8,h7")): #It works for 4vs4
     # def __init__(self, knights=("a1,b2,c1,e1,g1", "a8,b8,d8,f8,h8")):
-    # def __init__(self, knights=("a1,b2,c1,d2,e1,f2,g1,h2", "a8,b7,c8,d7,e8,f7,g8,h8")):
-    # def __init__(self, knights=("a1,d2,f1,h1", "a8,d7,h8")):
-    # def __init__(self, knights=("a1,b2,c1,d2", "a8,b7,c8,d7")):
-    # def __init__(self, knights=("a1,c2,e1,g2", "b8,d7,f8,h7")): #mas completa
-    def __init__(self, knights=("a1,b2,c1,e1,g1", "a8,b8,d8,f8,h8")):
-    # def __init__(self, knights=("a1,d1,h1", "b8,e8,g8")):
         self.stack = []
         self._setup(knights)
         self.turn = self.WHITE
@@ -90,7 +85,7 @@ class KnightsChess:
         if self.turn == self.WHITE:
             self.white_knights.remove(kfrom)
             self.white_knights.add(kto)
-            if kto in self.black_knights:
+            if self.is_capture(m):
                 self.black_knights.remove(kto)
                 self.stack.append(True)
             else:
@@ -98,32 +93,12 @@ class KnightsChess:
         else:
             self.black_knights.remove(kfrom)
             self.black_knights.add(kto)
-            if kto in self.white_knights:
+            if self.is_capture(m):
                 self.white_knights.remove(kto)
                 self.stack.append(True)
             else:
                 self.stack.append(False)
         self.turn = self.WHITE if self.turn == self.BLACK else self.BLACK
-
-    # def move(self, m):
-    #     kfrom, kto = m
-    #     if self.turn == self.WHITE:
-    #         self.white_knights.remove(kfrom)
-    #         self.white_knights.add(kto)
-    #         if self.is_capture(m):
-    #             self.black_knights.remove(kto)
-    #             self.stack.append(True)
-    #         else:
-    #             self.stack.append(False)
-    #     else:
-    #         self.black_knights.remove(kfrom)
-    #         self.black_knights.add(kto)
-    #         if self.is_capture(m):
-    #             self.white_knights.remove(kto)
-    #             self.stack.append(True)
-    #         else:
-    #             self.stack.append(False)
-    #     self.turn = self.WHITE if self.turn == self.BLACK else self.BLACK
 
     def undo(self, m):
         kfrom, kto = m
