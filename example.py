@@ -1,5 +1,5 @@
 from knightschess import KnightsChess
-
+import numpy as np
 
 # center = [
 #     [ 0,  0,  0,  0,  0,  0,  0, 0 ],
@@ -12,16 +12,16 @@ from knightschess import KnightsChess
 #     [ 0,  0,  0,  0,  0,  0,  0, 0 ]
 #     ]
 #
-center = [
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 1, 1, 1, 1, 1, 1, 0 ],
-    [ 0, 1, 4, 4, 4, 4, 1, 0 ],
-    [ 0, 1, 4, 6, 6, 4, 1, 0 ],
-    [ 0, 1, 4, 6, 6, 4, 1, 0 ],
-    [ 0, 1, 4, 4, 4, 4, 1, 0 ],
-    [ 0, 1, 1, 1, 1, 1, 1, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0 ],
-    ]
+# center = [
+#     [ 0, 0, 0, 0, 0, 0, 0, 0 ],
+#     [ 0, 1, 1, 1, 1, 1, 1, 0 ],
+#     [ 0, 1, 4, 4, 4, 4, 1, 0 ],
+#     [ 0, 1, 4, 6, 6, 4, 1, 0 ],
+#     [ 0, 1, 4, 6, 6, 4, 1, 0 ],
+#     [ 0, 1, 4, 4, 4, 4, 1, 0 ],
+#     [ 0, 1, 1, 1, 1, 1, 1, 0 ],
+#     [ 0, 0, 0, 0, 0, 0, 0, 0 ],
+#     ]
 
 # center = [
 #     [ 0,  0,  0,  0,  0,  0,  0, 0 ],
@@ -35,15 +35,51 @@ center = [
 #     ]
 
 # center = [
-#     [ 40, 40, 40, 40, 40, 40,  0, 0 ],
-#     [ 35, 35, 35, 35, 35, 35,  0, 0 ],
-#     [ 30, 30, 30, 30, 30, 30,  0, 0 ],
+#     [ 80, 50, 40, 40, 40, 40,  0, 0 ],
+#     [ 50, 50, 35, 35, 35, 35,  0, 0 ],
+#     [ 35, 35, 30, 30, 30, 30,  0, 0 ],
 #     [ 25, 25, 25, 25, 25, 25,  0, 0 ],
 #     [ 20, 20, 20, 20, 20, 20,  0, 0 ],
 #     [ 15, 15, 15, 15, 15, 15,  0, 0 ],
-#     [ 10, 10, 10, 10, 10, 5, 0, 0 ],
-#     [ 0,  0,  0,  0,  0,  0,  0, 0 ]
+#     [ 10, 10, 10, 10, 10,  5,  0, 0 ],
+#     [  0,  0,  0,  0,  0,  0,  0, 0 ]
 #     ]
+
+#v2
+# center = [
+#     [ 80, 50, 40, 40, 40, 35,  0, 0 ],
+#     [ 50, 50, 35, 35, 35, 35,  0, 0 ],
+#     [ 35, 35, 30, 30, 30, 30,  0, 0 ],
+#     [ 25, 25, 25, 25, 25, 25,  0, 0 ],
+#     [ 20, 20, 20, 20, 20, 20,  0, 0 ],
+#     [ 15, 15, 15, 15, 15, 15,  0, 0 ],
+#     [ 10, 10, 10, 10, 10,  5,  0, 0 ],
+#     [  0,  0,  0,  0,  0,  0,  0, 0 ]
+#     ]
+
+#v3
+# center = [
+#     [ 80, 50, 40, 40, 40, 35,  0, 0 ],
+#     [ 60, 50, 35, 35, 35, 35,  0, 0 ],
+#     [ 35, 35, 35, 30, 30, 30,  0, 0 ],
+#     [ 25, 25, 25, 25, 25, 25,  0, 0 ],
+#     [ 20, 20, 20, 20, 20, 20,  0, 0 ],
+#     [ 15, 15, 15, 15, 15, 15,  0, 0 ],
+#     [ 10, 10, 10, 10, 10,  5,  0, 0 ],
+#     [  0,  0,  0,  0,  0,  0,  0, 0 ]
+#     ]
+
+#v4
+center = np.array([
+    [ 80, 50, 40, 40, 40, 35,  0, 0 ],
+    [ 60, 50, 35, 35, 35, 35,  0, 0 ],
+    [ 35, 35, 35, 30, 30, 30,  0, 0 ],
+    [ 25, 25, 25, 25, 25, 25,  0, 0 ],
+    [ 25, 20, 20, 20, 20, 20,  0, 0 ],
+    [ 15, 15, 15, 15, 15, 15,  0, 0 ],
+    [ 10, 10, 10, 10, 10,  5,  0, 0 ],
+    [  0,  0,  0,  0,  0,  0,  0, 0 ]
+    ])
 
 dbg_move = None
 def score(state: KnightsChess):
@@ -51,30 +87,13 @@ def score(state: KnightsChess):
     res = state.game_over()
 
     if res != 0:
-        print(res)
-        print(state)
+        # print(res)
+        # print(state)
         if state.turn == state.WHITE:
             return -1000
         else:
             return 1000
 
-    # if len(state.black_knights) == 0:
-    #     print("negro !!!!!!!!!!!")
-    #     print(state)
-    # if len(state.white_knights) == 0:
-    #     print("blanco ??????????")
-    #     print(state)
-
-    # if res != 0:
-    #     print("pnga")
-    #     return res
-
-
-    # print("MOVIMIENTO: " + state.turn + "----->" + str(dbg_move[0]) + "-"  + str(dbg_move[1]))
-    # print("MOVIMIENTO: " + state.turn + "----->" + state.move2notation(dbg_move))
-    # print(state)
-    # print("BLACK: " + str(len(state.black_knights)))
-    # print("WHITE: " + str(len(state.white_knights)))
     value = 0
     if state.turn == state.BLACK:
         for kn in state.black_knights:
@@ -116,19 +135,11 @@ def insert_killerMove(move, depth):
         killer_moves[1][depth] = killer_moves[0][depth]
         killer_moves[0][depth] = move
 
+
 def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
     global node_cnt, hit_cnt, killer_moves, dbg_move
     node_cnt += 1
 
-    rez = state.game_over()
-
-    # if rez != 0:
-    #     # print(rez)
-    #     return score(state)
-    #
-    if depth == 0:
-        puntuacion = quiescence(state, alpha, beta, 3)
-        return puntuacion
 
     hbestm = None
     if hash(state) in htable:
@@ -141,10 +152,12 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
         if hdepth >= depth and hflag == "beta" and alpha >= hval:
             return hval
 
-    if depth == 0:
-        # print(state)
+    if state.game_over():
         return score(state)
 
+    if depth == 0:
+        res = quiescence(state, alpha, beta, 0)
+        return res
 
     if state.turn == state.WHITE:
         bestm = None
@@ -248,12 +261,12 @@ htable = {} # hkey -> (value, depth, bestm, flag)
 hit_cnt = 0
 
 
-for d in range(2, 13):
+for d in range(2, 16):
     node_cnt = 0
     hit_cnt = 0
     dbg_cnt = 0
 
-    killer_moves = [[(0, 0) for _ in range(50)] for _ in range(2)]
+    killer_moves = [[(0, 0) for _ in range(16)] for _ in range(2)]
 
     print(d, minimax(knights,  INITIAL_ALPHA, INITIAL_BETA, d), node_cnt,
           hit_cnt, dbg_cnt, dbg_cnt2, dbg_cnt3)
