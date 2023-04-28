@@ -1,17 +1,6 @@
 from knightschess import KnightsChess
 import numpy as np
 
-# center = np.array([
-#     [ 80, 50, 40, 40, 40, 35,  0, 0 ],
-#     [ 60, 50, 35, 35, 35, 35,  0, 0 ],
-#     [ 35, 35, 35, 30, 30, 30,  0, 0 ],
-#     [ 25, 25, 25, 25, 25, 25,  0, 0 ],
-#     [ 25, 20, 20, 20, 20, 20,  0, 0 ],
-#     [ 15, 15, 15, 15, 15, 15,  0, 0 ],
-#     [ 10, 10, 10, 10, 10,  5,  0, 0 ],
-#     [  0,  0,  0,  0,  0,  0,  0, 0 ]
-#     ])
-
 center = np.array([
     [  0,  0,  0,  0,  0,  0,  0, 0 ],
     [  0,  1 , 2 , 2,  2,  1,  1, 0 ],
@@ -23,24 +12,10 @@ center = np.array([
     [  0,  0,  0,  0,  0,  0,  0, 0 ]
     ])
 
-# center = np.array([
-#     [  1,  1 , 1 , 1,  1,  1,  1, 1 ],
-#     [  1,  1 , 1 , 1,  1,  1,  1, 1 ],
-#     [  1,  1 , 1 , 1,  1,  1,  1, 1 ],
-#     [  1,  1 , 1 , 1,  1,  1,  1, 1 ],
-#     [  1,  1 , 1 , 1,  1,  1,  1, 1 ],
-#     [  1,  1 , 1 , 1,  1,  1,  1, 1 ],
-#     [  1,  1 , 1 , 1,  1,  1,  1, 1 ],
-#     [  1,  1 , 1 , 1,  1,  1,  1, 1 ]
-#     ])
-
 #The score is measured by checking the position of all of the white or black pieces. I made a matrix so that the piece can
 #meet each other in the top-left corner of the board
 def score(state: KnightsChess):
-    # print("Whites: ")
-    # print(len(state.white_knights))
-    # print("Blacks: ")
-    # print(len(state.black_knights))
+
     res = state.game_over()
     if res != 0:
         print(state)
@@ -57,7 +32,7 @@ def score(state: KnightsChess):
     else:
         for kn in state.white_knights:
             r, c = kn
-            value += center[r][c] #TODO CAMBIAR A += A VER SI MEJORA
+            value += center[r][c]
         # value += len(state.white_knights) * 1
         value *= len(state.white_knights) * 2 + 1
         value //= len(state.black_knights) * 4 + 1
@@ -105,13 +80,9 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
 
     res = state.game_over()
     if res != 0:
-        # print("FIN PA: " + str(res))
         return score(state)
-        # return res
 
-    #if state.game_over():
-    #     print("FIN PA")
-    #     return score(state)
+
 
     hbestm = None
     if hash(state) in htable:
@@ -137,7 +108,6 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
         for m in sorted_moves(state, hbestm):
             state.move(m)
             val = minimax(state, alpha, beta, depth-1)
-            # print(val)
             state.undo(m)
             if val == state.WIN or val == state.LOSE:
                 return val
@@ -150,29 +120,22 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
                 htable[hash(state)] = (alpha, depth, bestm, "alpha")
                 return alpha
         htable[hash(state)] = (alpha, depth, bestm, "exact")
-        # print("pijote" + str(alpha))
         return alpha
     else:
         bestm = None
         for m in sorted_moves(state, hbestm):
             state.move(m)
             val = minimax(state, alpha, beta, depth-1)
-            # print("turno black")
-            # print(val)
-            # print(beta)
-            # print("----")
             state.undo(m)
             if val == state.WIN or val == state.LOSE:
                 return val
             if val < beta:
                 beta = val
                 bestm = m
-                # print("nuevo beta: " + str(beta))
             if alpha >= beta:
                 if not state.is_capture(m):
                     insert_killerMove(m, depth)
                 htable[hash(state)] = (beta, depth, bestm, "beta")
-                # print("cutt")
                 return beta
         htable[hash(state)] = (beta, depth, bestm, "exact")
         return beta
