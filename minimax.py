@@ -12,31 +12,20 @@ center = np.array([
     [  0,  0,  0,  0,  0,  0,  0, 0 ]
     ])
 
-#The score is measured by checking the position of all of the white or black pieces. I made a matrix so that the piece can
-#meet each other in the top-left corner of the board
+#The score is measured by checking the amount of pieces per player, taking into consideration that having more pieces than the opponent is better
 def score(state: KnightsChess):
 
     res = state.game_over()
     if res != 0:
-        print(state)
         return res
-
     value = 0
+
     if state.turn == state.BLACK:
-        for kn in state.black_knights:
-            r, c = kn
-            value -= center[r][c]
-        # value -= len(state.black_knights)*1
-        value *= len(state.black_knights)*2 + 1
-        value //= len(state.white_knights)*4 + 1
+        value += len(state.black_knights) * 10
+        value -= len(state.white_knights)
     else:
-        for kn in state.white_knights:
-            r, c = kn
-            value += center[r][c]
-        # value += len(state.white_knights) * 1
-        value *= len(state.white_knights) * 2 + 1
-        value //= len(state.black_knights) * 4 + 1
-    # print(value)
+        value -= len(state.white_knights) * 10
+        value += len(state.black_knights)
     return value
 
 #For evaluation moves, I first check if it's a Best Move, a Killer Move or a capture. If not I will just take the assigned value from the board
@@ -80,9 +69,9 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
 
     res = state.game_over()
     if res != 0:
-        return score(state)
-
-
+        print("GAME OVER -> " +  str(res))
+        print(state)
+        return res
 
     hbestm = None
     if hash(state) in htable:
@@ -94,14 +83,11 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
             return hval
         if hdepth >= depth and hflag == "beta" and alpha >= hval:
             return hval
-    #
-    # if depth == 0:
-    #     return score(state)
 
-    # Disabled quiescense search
+
     if depth == 0:
-        res = quiescence(state, alpha, beta, 10)
-        return res
+        return score(state)
+
 
     if state.turn == state.WHITE:
         bestm = None
@@ -109,8 +95,6 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
             state.move(m)
             val = minimax(state, alpha, beta, depth-1)
             state.undo(m)
-            if val == state.WIN or val == state.LOSE:
-                return val
             if val > alpha:
                 alpha = val
                 bestm = m
@@ -127,8 +111,6 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
             state.move(m)
             val = minimax(state, alpha, beta, depth-1)
             state.undo(m)
-            if val == state.WIN or val == state.LOSE:
-                return val
             if val < beta:
                 beta = val
                 bestm = m
@@ -140,51 +122,6 @@ def minimax(state: KnightsChess, alpha: int, beta: int, depth: int):
         htable[hash(state)] = (beta, depth, bestm, "exact")
         return beta
 
-#TODO fix quiescence
-def quiescence(state: KnightsChess, alpha: int, beta: int,depth):
-    scr = score(state)
-    if depth <= 0 or state.game_over() != 0:
-        return scr
-
-
-    hbestm = None
-    bestm = None
-    if state.turn == state.WHITE:
-        if scr >= beta:
-            return scr
-        for m in sorted_moves(state, hbestm):
-            if state.is_capture(m):
-                state.move(m)
-                val = quiescence(state, alpha, beta, depth - 1)
-                state.undo(m)
-                if val == state.WIN or val == state.LOSE:
-                    return val
-                if val > alpha:
-                    alpha = val
-                    bestm = m
-                if alpha >= beta:
-                    htable[hash(state)] = (alpha, depth, bestm, "alpha")
-                    return alpha
-        htable[hash(state)] = (alpha, depth, bestm, "exact")
-        return alpha
-    else:
-        if alpha < scr:
-            alpha = scr
-        for m in sorted_moves(state, hbestm):
-            if state.is_capture(m):
-                state.move(m)
-                val = quiescence(state, alpha, beta, depth - 1)
-                state.undo(m)
-                if val == state.WIN or val == state.LOSE:
-                    return val
-                if val < beta:
-                    beta = val
-                    bestm = m
-                if alpha >= beta:
-                    htable[hash(state)] = (beta, depth, bestm, "beta")
-                    return beta
-        htable[hash(state)] = (beta, depth, bestm, "exact")
-        return beta
 
 ###Debug variables
 dbg_cnt = 0
